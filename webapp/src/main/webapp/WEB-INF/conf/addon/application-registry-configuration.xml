@@ -1,0 +1,95 @@
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">   
+    	 	
+<external-component-plugins>
+    <target-component>org.exoplatform.application.registry.ApplicationRegistryService</target-component>     
+	    <component-plugin>
+	      <name>exoplatform.pulse.addon.registry</name>
+	      <set-method>initListener</set-method>
+	      <type>org.exoplatform.application.registry.ApplicationCategoriesPlugins</type>
+	      <description>this listener init the portlets are registered in PortletRegister</description>
+	      <init-params>
+	        <object-param>
+	          <name>PlatformPulse</name>
+	          <description>description</description>
+	          <object type="org.exoplatform.application.registry.ApplicationCategory">
+	            <field  name="name"><string>PlatformPulse</string></field>
+	            <field  name="displayName"><string>Platform Pulse</string></field> 
+	            <field  name="description"><string>Platform Pulse gadget</string></field>
+	            <field name="accessPermissions">
+	                <collection type="java.util.ArrayList" item-type="java.lang.String">
+	                  <value><string>*:/platform/users</string></value>
+	                </collection>
+                </field> 
+	            <field  name="applications">
+		            <collection type="java.util.ArrayList">
+	                	<value>
+		                    <object type="org.exoplatform.application.registry.Application">
+		                      <field name="categoryName">
+		                        <string>PlatformPulse</string>
+		                      </field>
+		                      <field name="applicationName">
+		                        <string>ActivityStatistics</string>
+		                      </field>
+		                      <field name="displayName">
+		                        <string>Activity Statistics</string>
+		                      </field>
+		                      <field name="description">
+		                        <string>Display Activity Statistics Gadget</string>
+		                      </field>
+		                      <field name="type">
+		                        <string>gadget</string>
+		                      </field>
+		                      <field name="contentId">
+		                        <string>ActivityStatistics</string>
+		                      </field>
+		                      <field name="accessPermissions">
+		                        <collection type="java.util.ArrayList" item-type="java.lang.String">
+		                          <value>
+		                            <string>*:/platform/users</string>
+		                          </value>
+		                        </collection>
+		                      </field>
+		                    </object>
+	                  	</value>
+	                  	
+	                  	<value>
+		                    <object type="org.exoplatform.application.registry.Application">
+		                      <field name="categoryName">
+		                        <string>PlatformPulse</string>
+		                      </field>
+		                      <field name="applicationName">
+		                        <string>TopForumParticipants</string>
+		                      </field>
+		                      <field name="displayName">
+		                        <string>Top Forum Participants</string>
+		                      </field>
+		                      <field name="description">
+		                        <string>Display Top Forum Participants Gadget</string>
+		                      </field>
+		                      <field name="type">
+		                        <string>gadget</string>
+		                      </field>
+		                      <field name="contentId">
+		                        <string>TopForumParticipants</string>
+		                      </field>
+		                      <field name="accessPermissions">
+		                        <collection type="java.util.ArrayList" item-type="java.lang.String">
+		                          <value>
+		                            <string>*:/platform/users</string>
+		                          </value>
+		                        </collection>
+		                      </field>
+		                    </object>
+	                  	</value>
+		            </collection>                               
+	            </field> 
+	          </object>        
+	        </object-param> 
+	      </init-params>
+	    </component-plugin>   
+  </external-component-plugins>
+  
+</configuration>

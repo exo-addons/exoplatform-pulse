@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Top Forum Participants"
+  	author="Nguyen Tuan Lam"
+    author_email="lamnt@exoplatform.com"
+  	description="Top Forum Participants">
+    <Locale messages="locale/default.xml" />
+    <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html">
+  <![CDATA[     
+  <head>
+    <link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <script language="javascript" type="text/javascript" src="/eXoResources/javascript/jquery-1.7.1.js"></script>
+    <script language="javascript" type="text/javascript" src="/eXoResources/skin/bootstrap/js/bootstrap-dropdown.js"></script>
+
+    <script type="text/javascript">
+    	var maxResult = 5;
+    	var filterBy = "month";
+    	var lastUpdate = 0;
+    	var arrListParticipants = [];
+
+    	function initTopForumParticipants(filterBy, maxResult) {
+    		var urlTopForumParticipants = '/rest/ForumParticipant/ByPeriod/'+ filterBy + '/' + maxResult;    
+				$.ajax({
+					url      : urlTopForumParticipants,
+					dataType : 'json',
+					success  : function (data) {
+						if(data.lastUpdate.time) {
+							lastUpdate = data.lastUpdate.time;
+							lastUpdateTime(); // initial call
+						}
+
+						if(data.listForumParticipantProfile) {
+							arrListParticipants = data.listForumParticipantProfile;
+							renderTopForumParticipants(arrListParticipants);
+						}	
+						
+						gadgets.window.adjustHeight(); 
+					}
+				});
+    	}
+
+    	function renderTopForumParticipants(arrList){
+    		var strHTML = "";
+
+      if (arrList != ""){
+				$.each(arrList, function(i){
+	    		var linkprofile = arrList[i].profileUrl;
+	    		var userimglink = arrList[i].avatarUrl;
+	    		if(userimglink == null) userimglink = '/social-resources/skin/images/ShareImages/UserAvtDefault.png';
+	    		var fullname = arrList[i].fullName;
+	    		var periodpost = arrList[i].periodPost;
+	    		var totalPost = arrList[i].totalPost;
+          var textPostPeriod = ' posts ';
+          var textPostTotal = ' total posts ';
+
+        if (periodpost == 1) {
+        textPostPeriod = ' post ';
+        }
+        if (totalPost == 1){
+        textPostTotal = ' total post ';
+        }
+
+	    		strHTML += '<li>';
+	    		strHTML += '<a class="media" href="'+linkprofile+'" target="_blank">';
+	    		strHTML += '<span class="pull-left"><img src="'+ userimglink +'" alt="'+ fullname +'" /></span>';
+	    		strHTML += '<span class="media-info">';
+	    		strHTML += '<strong class="name">'+ fullname +'</strong>';
+	    		strHTML += '</a>';
+	    		strHTML += '<span class="post">'+ periodpost + textPostPeriod + '| '+ totalPost + textPostTotal+'</span>';
+	    		strHTML += '</span>';
+	    		strHTML += '</li>';
+				});
+				$(".list-top-user").html(strHTML);
+      }
+      else{
+        strHTML += 'No data';
+				$(".list-top-user").html(strHTML);
+          }
+        
+
+    	}
+
+    	function lastUpdateTime() {		    
+    		//check current time
+		    var currentupdate = new Date().getTime();
+				var time = currentupdate - lastUpdate;
+				var msgupdate = "";
+				if(new Date(time).getMinutes() <= 1) {
+					msgupdate = "less than a minute ago";		
+				} else {
+					if(new Date(time).getMinutes() < 59)	{
+						msgupdate = "less than "+ new Date(time).getMinutes() +" minutes ago";		
+					} else {
+						msgupdate = "less than "+ new Date(time).getHours() +" hours ago";		
+					}
+				}
+
+		    // set the content of the element with the ID time to the formatted string
+		    $('.text-light').html(msgupdate);
+
+		    // call this function again in 1000ms
+		    setTimeout(lastUpdateTime, 1000);
+			}
+
+    	$(function() {
+
+      //load default montly
+      initTopForumParticipants("month", maxResult);
+
+        $(".disabled-link").click(function(event) {
+          event.preventDefault();
+        });
+
+
+        var tday = new Date();
+        if(tday.getMonth() == 0){
+        $(".liselectYear").hide();
+        }
+
+	//			$("#top-forum-time").change(function() {
+	//				$("#top-forum-time option:selected").each(function() {
+	//					filterBy = $(this).val();
+	//				});
+	//				initTopForumParticipants(filterBy, maxResult);		
+	//			}).trigger("change");
+
+				$( document.body ).on( 'click', '.dropdown-menu li', function( event ) {
+				  var $target = $(event.currentTarget);
+				  var typeView = $target.find("a").attr("rel");
+				  initTopForumParticipants(typeView, 5);
+				  $target.closest('.btn-group')
+			     	.find('[data-bind="label"]').text($target.text())
+			      .end()
+			     	.children('.dropdown-toggle').dropdown('toggle');
+				  return false;
+				});
+    	});
+
+
+    </script>
+    <style>
+    	/* core.css or any file *.css use global for all pages cloud */
+			.UIGadgetPortlet .gadgets-gadget
+			{ -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18); -moz-box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18); box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18); margin-bottom: 12px; }
+			/* gadget-common.css */
+			.uiBox 
+			{ margin-bottom: 2px; box-shadow: none; } 	
+
+			.btn-input {
+			   display: block;
+			}
+
+			.btn-input .btn.form-control {
+			    text-align: left;
+			}
+
+			.btn-input .btn.form-control span:first-child {
+			   left: 10px;
+			   overflow: hidden;
+			   position: absolute;
+			   right: 25px;
+			}
+
+			.btn-input .btn.form-control .caret {
+			   margin-top: -1px;
+			   position: absolute;
+			   right: 10px;
+			   top: 50%;
+			}
+
+      a.disabled-link,
+      a.disabled-link:visited ,
+      a.disabled-link:active,
+      a.disabled-link:hover {
+          color:#aaa !important;
+      }
+    </style>	
+  </head>
+	<div id="content" class="uiBox topForumParticipant" >
+		<h6 class="title center">Top Forum Participants</h6>
+		<div class="uiContentBox">
+			<div class="panel panel-default">
+			  <div class="panel-body">
+			    <div class="btn-group">
+			     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			       <span data-bind="label">Monthly</span>&nbsp;<span class="caret"></span>
+			     </button>
+			     <ul class="dropdown-menu" role="menu">
+			       <li><a href="javascript:void(0);" rel="week">Weekly</a></li>
+			       <li><a href="javascript:void(0);" rel="month">Monthly</a></li>
+			       <li class="liselectYear" ><a href="javascript:void(0);" rel="year">Yearly</a></li>
+			     </ul>
+			    </div>
+			  </div>
+			</div>
+			<ul class="list-top-user" style="margin-top: 1em; min-height: 4em">
+				
+			</ul>
+			<div class="lastUpdate">Last updated <span class="text-light">less than a minute ago</span></div>
+		</div>
+	</div>
+  ]]>
+</Content>
+</Module>
+

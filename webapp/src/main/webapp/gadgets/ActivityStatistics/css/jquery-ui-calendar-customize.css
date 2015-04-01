@@ -1,0 +1,154 @@
+.ui-datepicker  {
+	background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #CCCCCC;
+    -moz-box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18);
+    -webkit-box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18);
+    box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18);
+	padding: 0;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 12px;
+	width: 225px;
+	border-radius: 4px;
+}
+
+.ui-datepicker   table {
+  border-collapse: separate;
+   margin: 0 auto 10px;
+   width: 214px;
+   table-layout: fixed;
+}
+
+
+.ui-datepicker thead  th  span{
+    text-transform: uppercase;
+}
+.ui-datepicker .ui-datepicker-title {
+	line-height: 100%;
+	font-size: 13px;
+	color:#333;    font-weight: bold;
+}
+span[title="Sunday"] ,.ui-datepicker-calendar th.ui-datepicker-week-end:first-child  span{
+	color:red;
+}
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next{
+	line-height: 14px;
+    padding: 2px;
+	height: auto;
+	width: auto;
+	cursor: pointer;
+	top:8px;
+	border: 1px solid rgba(0, 0, 0, 0);
+    display: block;
+    vertical-align: middle;
+	
+}
+.ui-datepicker .ui-datepicker-next{ 
+	right: 10px;
+}
+.ui-datepicker .ui-datepicker-prev {
+	left: 10px;
+}
+
+.ui-datepicker  .ui-widget-header .ui-icon {
+	background-image: url("../images/next-prev.png");
+	background-repeat: no-repeat;
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: text-top;
+    width: 16px;
+	position: static;
+	margin: 0;
+}
+
+.ui-datepicker thead:after {
+    background:  #CCCCCC;
+    content: "";
+    display: block;
+    height: 1px;
+    margin: 0 -9px;
+    width: 226px;
+}
+
+.ui-datepicker  .ui-widget-header .ui-icon:hover ,.ui-datepicker-header > a:hover .ui-icon{
+	background-image: url("../images/next-prev-hover.png");
+}
+.ui-datepicker  .ui-icon.ui-icon-circle-triangle-w {
+    background-position: -22px -2px;
+}
+
+.ui-datepicker  .ui-icon.ui-icon-circle-triangle-e{
+ background-position: -1px -2px;
+}
+
+.ui-datepicker-header > a:hover {
+	 background-color: #F9F9F9;
+    background-image: linear-gradient(to bottom, #FFFFFF, #F1F1F1);
+    background-repeat: repeat-x;
+    border: 1px solid #CCCCCC;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px 0 #FFFFFF;
+}
+.ui-datepicker .ui-widget-header {
+    background: #F0F0F0;
+	border: none;
+    border-bottom: 1px solid #CCCCCC;
+    border-radius: 4px 4px 0 0;
+    -moz-box-shadow: 0 1px 2px rgba(13, 13, 13, 0.2);
+    -webkit-box-shadow: 0 1px 2px rgba(13, 13, 13, 0.2);
+    box-shadow: 0 1px 2px rgba(13, 13, 13, 0.2);
+    margin: 0;
+    padding: 8px 10px;
+    word-wrap: break-word;
+	line-height: 14px;
+    padding:12px 10px;
+    text-align: center;
+}
+
+.ui-datepicker th {
+	font-size: 11px;
+	border: 0 none;
+    font-weight: normal;
+    padding: 0;
+    text-align: center;
+}
+
+.ui-datepicker td {
+	  padding: 0;
+	
+}
+.ui-datepicker th {
+	line-height: 28px;
+}
+.uiCalendarComponent tbody {
+    font-size: 12px;
+    padding: 0 9px 9px 6px;
+}
+
+.ui-datepicker .ui-state-default {
+	border: none;
+	background: none;
+	color: #333333;    
+	font-weight: normal;
+    padding: 0;
+	display: block;    
+	font-size: 12px;
+    text-align: center;
+	line-height: 24px;
+	border: 1px solid transparent;
+}
+.ui-datepicker .ui-state-default:hover {
+	 background-color: #F0F0F0;
+    border-radius: 3px;
+}
+.ui-datepicker .ui-state-default.ui-state-active {
+ background-color: #2F5E92;
+    border-radius: 3px;
+    color: #FFFFFF;    
+	border:  none;
+}
+.ui-datepicker .ui-datepicker-today a {
+    border: 1px solid #CCCCCC;
+    border-radius: 3px;
+    font-weight: bold;
+}

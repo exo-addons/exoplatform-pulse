@@ -1,8 +1,49 @@
+#
+# Default excludes
+#
+
+# Binaries
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.war
+*.ear
+*.sar
+*.class
+*~
+
+# Maven 
 target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
+
+# IntelliJ project files 
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+
+# Misc
+*.swp
+.java-version
+
+#
+# Project excludes
+#
+
+# Never add local setenv scripts
+setenv-dev.sh
+setenv-acceptance.sh
+setenv-preprod.sh
+setenv-prod.sh

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.exoplatform.addons.pulse</groupId>
+    <artifactId>exoplatform-pulse-parent</artifactId>
+    <version>1.0.x-SNAPSHOT</version>
+  </parent>
+  <artifactId>exoplatform-pulse-webapp</artifactId>
+  <packaging>war</packaging>
+  <name>eXo Platform Pulse :: Webapp</name>
+  <description>eXo Platform Pulse - web application of portal extension</description>
+  <build>
+    <finalName>exoplatform-pulse-webapp</finalName>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.gatein.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.ecms</groupId>
+      <artifactId>ecms-core-webui</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-webui-component</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>exoplatform-pulse-lib</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>

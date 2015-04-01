@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Copyright (C) 2003-2013 eXo Platform SAS.
+
+This is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 3 of
+the License, or (at your option) any later version.
+
+This software is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this software; if not, write to the Free
+Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<Module>
+  <ModulePrefs title="Activity Statistic"
+  author="Do Thanh Tung"
+  author_email="tungdt@exoplatform.com"
+  description="Display eXo Platform Activity Statistic">
+    <Require feature="dynamic-height"/>
+    <Require feature="views" />  
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[     
+	 <html>
+      <head>
+        <title>eXo Community Activity Statistic</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+        <script language="javascript" type="text/javascript" src="/eXoResources/javascript/jquery-1.7.1.js">
+        </script>
+        
+        <!--Import CSS for gadget-->
+        <link  rel="stylesheet" type="text/css" href= "css/bootstrap-min-lt.css" />
+        <link  rel="stylesheet" type="text/css" href= "css/Core-min-lt.css" />
+        <link  rel="stylesheet" type="text/css" href= "css/wcm.css" />
+        <link  rel="stylesheet" type="text/css" href= "css/activity-gadget-style.css" />  
+        <!--End CSS for gadget-->
+        
+        <!-- Import Css for datePicker -->
+        <link type="text/css" rel="stylesheet" href="css/jquery-ui-calendar.css"/>
+        <link type="text/css" rel="stylesheet" href="css/jquery-ui-calendar-customize.css"/>
+        <!-- End Css for datePicker -->
+        
+        
+        <script language="javascript" type="text/javascript"  src="js/highcharts.js"></script>
+        <script language="javascript" type="text/javascript"  src="js/exporting.js"></script>
+        <script language="javascript" type="text/javascript"  src="js/date.js"></script>
+        <script language="javascript" type="text/javascript"  src="js/dateFormat.js"></script>
+        <script language="javascript" type="text/javascript"  src="js/dateUtil.js"></script>
+
+        
+        <!-- Import JS for datePicker -->
+        <!-- <script src="js/jquery-1.10.2.js"></script> -->
+        <script src="js/jquery-ui.js"></script>
+        <!-- End JS for datePicker -->
+        
+
+      </head>
+      <body>
+        
+        <script language="javascript" type="text/javascript">
+          var globalFilter = "day";
+          var plfDownloadChartData;
+          $(function() {
+            $( "#datePickerFrom" ).datepicker({ dateFormat: "dd/mm/yy" });
+            //$( "#datePickerTo" ).datepicker({ dateFormat: "dd/mm/yy" });
+          });
+          
+          function getViewName() {
+            //return gadgets.views.getCurrentView().getName();
+            gadgetWidth = $("#uiBoxActivityGadget").width();
+            //console.log(gadgetWidth);
+            if(parseInt(gadgetWidth) < 600) return "home";
+            return "canvas";
+          }
+          
+          function displayInViewMode(){
+            if (getViewName() == "canvas") {
+              /* Do canvas specific stuff here */
+              $("#canvasView").show();
+              $("#homeView").hide();
+            }
+            
+            if (getViewName() == "home") {
+              /* Do home specific stuff here */
+              $("#canvasView").hide();
+              $("#homeView").show();
+            }
+          }
+          
+          function getREST(url){         
+            return $.ajax({
+              type: "GET",
+              url: url,
+              dataType: 'json',
+              async: false
+            });
+          }
+          
+          
+          function getData(maxColumn,filter,start_date,end_date){
+            var url = "/rest/activitystatistic/"+ maxColumn + "/" + filter+ "/" + start_date;
+            var json=$.parseJSON(getREST(url).responseText);
+            return json;
+          }
+          
+          function drawPLFDownloadChartByFilterWeekMonth(displayObject, sumObject){
+            // alert("drawPLFDownloadChartByFilterWeekMonth");
+            dateFromString = $("#datePickerFrom").val().replace(/\//g, '-');
+            maxColumn = getViewName()=="home"?5:10;
+            filter = globalFilter;
+            var url = "/rest/activitystatistic/plfdownload/"+ maxColumn + "/" + filter+ "/" + dateFromString;
+            /*
+            $.when(
+            parseJSON(getREST(url).responseText)
+            ).then(function( data, textStatus, jqXHR ) {
+            chartTitle = data.listTitle;
+            plfDownloadData = data.plfDownloadsData;
+            var plfDownloadChart;
+            drawChart(plfDownloadChart, displayObject, plfDownloadData, chartTitle, sumObject);
+          });
+            */
+            
+            // It takes time to get PLFdownload data
+            // Will load data and draw chart ansynchronize
+            $.getJSON( url, function( data ) {
+              chartTitle = data.listTitle;
+              plfDownloadData = data.plfDownloadsData;
+              var plfDownloadChart;
+              drawChart(plfDownloadChart, displayObject, plfDownloadData, chartTitle, sumObject);
+            });
+            
+          }
+          
+          
+          function drawPLFDownloadChart(displayObject, sumObject){
+            //alert("drawPLFDownloadChart");
+            if(globalFilter != "day"){
+              drawPLFDownloadChartByFilterWeekMonth(displayObject, sumObject)
+                }else{
+                  $.when(
+                    getPLFDownloadData()
+                  ).then(function(data){
+                    if(null==data||null==data.query.results){
+                      
+                    }else{
+                      downloadData = data.query.results.json.downloads;
+                      chartTitle=[];
+                      chartValue=[];
+                      
+                      if( downloadData== undefined){
+                        var plfDownloadChart;
+                        drawChart(plfDownloadChart, displayObject, chartValue, chartTitle, sumObject);
+                        return;
+                      }
+                      
+                      if($.isArray(downloadData)==false){
+                        //alert(downloadData.json);
+                        dateString = (downloadData.json[0]).substring(0,10);
+                        //dateValue = new Date(getDateFromFormat(dateString,"yyyy-MM-dd"));
+                        //dateString = dateValue.toString("dd/MM/yyyy");
+                        chartTitle[0]=dateString;
+                        chartValue[0]= parseFloat(downloadData.json[1]);
+                      }else{
+                        maxColumn = getViewName()=="home"?5:10;
+                        for(i=0; i< maxColumn && i< downloadData.length; i++){
+                          dateString = (downloadData[i].json[0]).substring(0,10);
+                          //dateValue = new Date(getDateFromFormat(dateString,"yyyy-MM-dd"));
+                          //dateString = dateValue.toString("dd/MM/yyyy");
+                          chartTitle[i]=dateString;
+                          chartValue[i]= parseFloat(downloadData[i].json[1]);
+                        }
+                      }
+                      for(i=0; i<chartTitle.length; i++){
+                        dateString = chartTitle[i];
+                        if(globalFilter=="day"){
+                          dateValue = new Date(getDateFromFormat(dateString,"yyyy-MM-dd"));
+                          dateString = dateValue.toString("dd-MM-yyyy");
+                          chartTitle[i] = dateString;
+                          continue;
+                            }
+                      }
+                      
+                      //alert(chartTitle);
+                      //alert(chartValue);
+                      var plfDownloadChart;
+                      drawChart(plfDownloadChart, displayObject, chartValue, chartTitle, sumObject);
+                    }
+                  });
+                }
+          }
+          
+          function getPLFDownloadData(){
+            maxColumn = getViewName()=="home"?5:10;
+            start_date_string = $("#datePickerFrom").val();
+            start_date = new Date(getDateFromFormat(start_date_string,"dd/MM/yyyy"));
+            start_date_string = start_date.toString("yyyy-MM-dd");
+            //alert(start_date_string);
+            end_date_string = $("#datePickerTo").val();
+            end_date =  new Date();
+            if(end_date_string != "Today"){
+              
+              end_date = new Date(getDateFromFormat(end_date_string,"dd/MM/yyyy"));
+            }
+            if(end_date > (new Date())) end_date= new Date();
+            //alert(end_date);
+            end_date_string = end_date.toString("yyyy-MM-dd");
+            
+            var url = "http://sourceforge.net/projects/exo/files/stats/json?start_date="+start_date_string+"&end_date="+end_date_string;
+            //alert(url);
+            var query = "select * from json where url=\"" + url + "\"";
+            return $.getJSON("http://query.yahooapis.com/v1/public/yql", { q: query, format: "json" },function(data){
+              if (data.query.results) {
+                
+              }
+            });
+          }
+          
+          function drawChart(chartObj, displayObject, chartValue, chartTitle, sumObject, isAverage){
+            
+            //Set summary number for chart
+            sum = 0;
+            average = 0;
+            totalItemHaveData=0;
+            for(i = 0; i < chartValue.length; i++){
+              sum += chartValue[i];
+              if(parseInt(chartValue[i])>0) totalItemHaveData++;
+            }
+            displayObject.height(250);
+            average = totalItemHaveData>0?parseInt(sum/totalItemHaveData):0;
+            if(isAverage){
+              sumObject.text(average + "");
+            }else{
+              sumObject.text(sum + "");
+            }
+            if(sum == 0){
+              displayObject.empty();
+              displayObject.html("<span>There is not any statistic data during this time</span>");
+              //displayObject.height(75);
+              return;
+            }
+            
+            chartObj = new Highcharts.Chart({
+              chart: {
+                renderTo: displayObject.attr('id'),
+                borderColor: '#C0C0C0',
+                borderWidth: 0,
+                type: 'area'
+              },
+              title: {
+                text: null
+              },     
+              legend: {
+                enabled: false
+              },
+              credits: {
+                enabled: false
+              },
+              xAxis: {
+                categories: chartTitle,
+                gridLineWidth: 0.5
+              },
+              yAxis: {
+                min: 0,
+                gridLineWidth: 0.5,
+                title: {
+                  text: '',
+                  rotation: 0
+                },
+                labels: {
+                  enabled: false
+                }
+              },
+              tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' +
+                '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+              },
+              plotOptions: {
+                column: {
+                  pointPadding: 0.2,
+                  borderWidth: 0
+                }
+              },
+              series: [{
+                name: null,
+                data: chartValue
+                
+              }],
+              
+              exporting: {
+                enabled: false
+              }
+            });
+          }
+          
+          function initForm(){
+            today = new Date();
+            todayString = today.toString("dd/MM/yyyy");
+            var maxColumn = 5;
+            var lastDay;
+            viewMode = getViewName();
+            //alert(viewMode);
+            if(viewMode=="canvas"){
+              maxColumn = 10;
+            }else{
+              //home view
+              maxColumn = 5;
+              $("#selectChartTitle").css("line-height","25px");
+              $("#selectChartBox").css("margin","0px 0px 15px");
+              $("#uiSelectboxID").css({"float": "right","width":"150px"});
+              $("#typeFilter").css({"text-align": "right","width":"245px"});
+              $("#dateFilter").css({"float": "right","margin": "10px 0","width":"245px"});
+            }
+            if(globalFilter == "day"){
+              lastDay = (maxColumn-1).days().ago();
+            }
+            if(globalFilter == "week"){
+              lastDay = Date.today().addDays(-7*(maxColumn-1)) ;
+            }
+            if(globalFilter == "month"){
+              lastDay = Date.today().addMonths(-1*(maxColumn-1));
+            }
+            
+            
+            lastDayString = lastDay.toString("dd/MM/yyyy");
+            
+            //$("#datePickerTo").val(todayString);
+            $("#datePickerTo").val("Today");
+            $("#datePickerFrom").val(lastDayString);
+          }
+          
+          function cleanUpCharts(){
+            if(getViewName()== "home"){
+              $("#miniChart").html("<span>Loading ... </span>");
+              $("#miniChartSum").text("0");
+            }else{
+              $("#newUsersChart").html("<span>Loading ... </span>");
+              $("#loginCountChart").html("<span>Loading ... </span>");
+              $("#forumActiveUsersChart").html("<span>Loading ... </span>");
+              $("#newForumPostChart").html("<span>Loading ... </span>");
+              $("#plfDownloadsChart").html("<span>Loading ... </span>");
+              $("#userConnectionChart").html("<span>Loading ... </span>");
+              $("#socialPostChart").html("<span>Loading ... </span>");
+              
+              $("#newUsersSum").text("0");
+              $("#loginCountSum").text("0");
+              $("#forumActiveUsersSum").text("0");
+              $("#newForumPostSum").text("0");
+              $("#plfDownloadsSum").text("0");
+              $("#userConnectionSum").text("0");
+              $("#socialPostSum").text("0");
+            }
+          }
+          
+          function formChange(){
+            cleanUpCharts();
+            
+            dateFromString = $("#datePickerFrom").val().replace(/\//g, '-');
+            
+            filter = globalFilter;
+            metric = $("#selectMetric").val();
+            viewMode = getViewName();
+            maxColumn =5;
+            if(viewMode=="canvas"){
+              maxColumn = 10;
+            }
+            //console.log("dateFromString=" + dateFromString + "; filter="  + filter + "; metric=" + metric + "; viewMode=" + viewMode);
+            
+            //Get data from server
+            chartData = getData(maxColumn,filter,dateFromString);
+            //Prepare chartData
+            newUsersData = chartData.newUsersData;
+            loginCountData = chartData.loginCountData;
+            forumActiveUsersData = chartData.forumActiveUsersData;
+            newForumPostsData = chartData.newForumPostsData;
+
+            userConnectionData = chartData.userConnectionData;
+            socialPostData = chartData.socialPostData;
+            
+            chartTitle = chartData.listTitle;
+            
+            //Draw chart in minimal mode
+            if(viewMode=="home"){
+              var chart;
+              var isAverage = false;
+              dataToDraw = newUsersData;
+              $("#miniTotal").text("Unique");
+              if(metric == "loginCount") {
+                dataToDraw = loginCountData;
+                $("#miniTotal").text("Unique");
+              }
+              if(metric == "forumActiveUsers"){
+                isAverage = true;
+                dataToDraw = forumActiveUsersData;
+                $("#miniTotal").text("Average");
+              }
+              if(metric == "newForumPost"){
+                dataToDraw = newForumPostsData;
+                $("#miniTotal").text("Total post");
+              }
+
+              if(metric == "userConnection"){
+                dataToDraw = userConnectionData;
+                $("#miniTotal").text("New users social connections");
+              }
+
+              if(metric == "socialPost"){
+                dataToDraw = socialPostData;
+                $("#miniTotal").text("New posts on the activities stream");
+              }
+
+
+              if(metric == "plfDownloads"){
+                drawPLFDownloadChart($("#miniChart"),$("#miniChartSum"));
+                $("#miniTotal").text("All version");
+              }else{
+                drawChart(chart,$("#miniChart"), dataToDraw, chartTitle, $("#miniChartSum"), isAverage);
+              }
+            }else{
+              //Draw chart in Maximum mode
+              var chart1, chart2, chart3, chart4, chart5, chart6, chart7, chart8;
+              
+              drawChart(chart1, $("#newUsersChart"), newUsersData, chartTitle, $("#newUsersSum"));
+              drawChart(chart2, $("#loginCountChart"), loginCountData, chartTitle, $("#loginCountSum"));
+              drawChart(chart3, $("#forumActiveUsersChart"), forumActiveUsersData, chartTitle, $("#forumActiveUsersSum"), true);
+              drawChart(chart4, $("#newForumPostChart"), newForumPostsData, chartTitle, $("#newForumPostSum"));
+
+              drawChart(chart4, $("#userConnectionChart"), userConnectionData, chartTitle, $("#userConnectionSum"));
+              drawChart(chart4, $("#socialPostChart"), socialPostData, chartTitle, $("#socialPostSum"));
+              
+              drawPLFDownloadChart($("#plfDownloadsChart"),$("#plfDownloadsSum"));
+            }
+            
+            gadgets.window.adjustHeight();
+          }
+          
+          //Update dateTo when DateFrom change, and filter change
+          function fromDateChange(){
+            dateFromString = $("#datePickerFrom").val();
+            fromDateValue = new Date(getDateFromFormat(dateFromString,"dd/MM/yyyy"));
+            
+            filter = globalFilter;
+            viewMode = getViewName();
+            var maxColumn = 5;
+            if(viewMode=="canvas"){
+              maxColumn = 10;
+            }else{
+              //home view
+              maxColumn = 5;
+              
+            }
+            if(globalFilter == "day"){
+              nextDay = fromDateValue.addDays(maxColumn-1);
+            }
+            if(globalFilter == "week"){
+              nextDay = fromDateValue.addDays(7*(maxColumn-1)) ;
+            }
+            if(globalFilter == "month"){
+              nextDay = fromDateValue.addMonths(maxColumn-1);
+            }
+            
+            nextDayString = nextDay.toString("dd/MM/yyyy");
+            $("#datePickerTo").val(nextDayString);
+            
+          }
+          
+          $( document ).ready(function() {
+            displayInViewMode();
+            initForm();
+            formChange();
+            //gadgets.window.adjustHeight();
+            
+            $("#btnDayFilter").click(function() {
+              $("#btnDayFilter").addClass("active");
+              $("#btnWeekFilter").removeClass("active");
+              $("#btnMonthFilter").removeClass("active");
+              
+              globalFilter = "day";
+              if($("#datePickerTo").val() == "Today"){
+                initForm();
+              }else{
+                fromDateChange();
+              }
+              formChange();
+            });
+            
+            $("#btnWeekFilter").click(function() {
+              $("#btnWeekFilter").addClass("active");
+              $("#btnDayFilter").removeClass("active");
+              $("#btnMonthFilter").removeClass("active");
+              
+              globalFilter = "week";
+              if($("#datePickerTo").val() == "Today"){
+                initForm();
+              }else{
+                fromDateChange();
+              }
+              formChange();
+            });
+            
+            $("#btnMonthFilter").click(function() {
+              $("#btnMonthFilter").addClass("active");
+              $("#btnDayFilter").removeClass("active");
+              $("#btnWeekFilter").removeClass("active");
+              
+              globalFilter = "month";
+              if($("#datePickerTo").val() == "Today"){
+                initForm();
+              }else{
+                fromDateChange();
+              }
+              formChange();
+            });
+            
+            $("#datePickerFrom").change(function() {
+              fromDateChange();
+              formChange();
+            });
+            
+            
+            
+            $("#selectMetric").change(function() {
+              formChange();
+            });
+            
+            $("#showExportButton").click(function() {
+              $("#export-container").show();
+              //go to top
+              parent.scrollTo(0,0);
+            });
+            
+            $("#cancelExport").click(function() {
+              $("#export-container").hide();
+            });
+            
+            $("#saveExport").click(function(){
+              var exportType = $('input[name=rbExportType]:checked').val();
+              var isExportNewUsersData = $("#cbExportNewUsersData").is(':checked');
+              var isExportForumActiveUsersData = $("#cbExportForumActiveUsersData").is(':checked');
+              var isExportNewForumPostsData = $("#cbExportNewForumPostsData").is(':checked');
+              var isExportLoginCountData = $("#cbExportLoginCountData").is(':checked');
+              var isExportPlfDownloadsData = $("#cbExportPlfDownloadsData").is(':checked');
+              
+              var isExportUserConnectionData = $("#cbExportUserConnectionData").is(':checked');
+              var isExportSocialPostData = $("#cbExportSocialPostData").is(':checked');
+
+              
+              if(!(isExportNewUsersData || isExportForumActiveUsersData || isExportNewForumPostsData || isExportLoginCountData || isExportPlfDownloadsData)){
+                alert("You should check Metrics types to export");
+                return;
+              }
+              
+              var dateFromString = $("#datePickerFrom").val().replace(/\//g, '-');
+            
+              var filter = globalFilter;
+              var viewMode = getViewName();
+              var maxColumn =5;
+              if(viewMode=="canvas"){
+                maxColumn = 10;
+              }
+              var url = "/rest/activitystatistic/export/" + exportType + "/" + maxColumn + "/" + filter+ "/" + dateFromString + "?";
+              url += "exportNewUsersData=" + isExportNewUsersData;
+              url += "&exportForumActiveUsersData=" + isExportForumActiveUsersData;
+              url += "&exportNewForumPostsData=" + isExportNewForumPostsData;
+              url += "&exportLoginCountData=" + isExportLoginCountData;
+              url += "&exportPlfDownloadsData=" + isExportPlfDownloadsData;
+
+              url += "&exportUserConnectionData=" + isExportUserConnectionData;
+              url += "&exportSocialPostData=" + isExportSocialPostData;
+              //alert(url);
+              window.open(url);
+            });
+          });
+          
+        </script>
+        
+        <div class="uiBox" id="uiBoxActivityGadget" style="margin:0px">
+          <h6 class="title clearfix">Activity Statistics</h6>
+          <div class=" uiContentBox">
+            <div class="clearfix">
+              <div class="btn-group pull-right" id="typeFilter">
+                <button type="button" class="btn  active" id="btnDayFilter">Day</button>
+                <button type="button" class="btn " id="btnWeekFilter">Week</button>
+                <button type="button" class="btn " id="btnMonthFilter">Month</button>
+              </div>
+              <div class="form-inline form-chart" id ="dateFilter">
+                <label class="">
+                  From:
+                </label>
+                <input type="text" class="input-small"  id="datePickerFrom">
+                <label class="">
+                  To:
+                </label>
+                <input type="text" class="input-small"  id="datePickerTo" disabled style="background: #E6E6E6;">
+              </div>
+            </div>
+            
+            <!--Start home view (minimal view)-->
+            <div class="chart-container" id="homeView" style="display:none">
+              <p class="select-chart selectboxMedium" id="selectChartBox">
+                <span id="selectChartTitle">Select a chart:</span>
+                <span class="uiSelectbox" id="uiSelectboxID">
+                  <select id="selectMetric" class="selectbox">
+                    <option value="newUsers">New Users</option>
+                    <option value="loginCount">Login Count</option>
+                    <option value="forumActiveUsers">Forum Active Users</option>
+                    <option value="newForumPost">New Forum Post</option>
+                    <option value="userConnection">New users social connections</option> 
+                    <option value="socialPost">New posts on the activities stream</option>               
+                    <option value="plfDownloads">PLF Downloads</option>
+                  </select>
+                </span>
+              </p>
+              <p class="chart-left">
+                <span class="number" id="miniChartSum">0</span>
+                <span id="miniTotal">Unique</span>
+              </p>
+              <div class="row-chart" id="miniChart" style="min-width: 100%; height: 250px; margin: 0 auto">          
+              </div>
+            </div>            
+            
+            <!--End home view (minimal view)-->
+            
+            
+            <!--Start Canvas view-->
+            <div id="canvasView" style="display:none">
+              <div class="chart-container">
+                <h4 class="titleWithBorder">New Users</h4>
+                <div class="row-chart clearfix">
+                  <div class="chart-left pull-left ">
+                    <span class="number" id ="newUsersSum">0</span>
+                    Unique
+                  </div>
+                  <div class="chart-right" id="newUsersChart" style="height: 250px;">
+                    
+                  </div>
+                </div>
+              </div>
+              
+              <div class="chart-container">
+                <h4 class="titleWithBorder">Login Count</h4>
+                <div class="row-chart clearfix">
+                  <div class="chart-left pull-left ">
+                    <span class="number" id="loginCountSum">0</span>
+                    Unique
+                  </div>
+                  <div class="chart-right" id="loginCountChart" style="height: 250px;">
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="chart-container">
+                <h4 class="titleWithBorder">Forum Active Users</h4>
+                <div class="row-chart clearfix">
+                  <div class="chart-left pull-left ">
+                    <span class="number" id="forumActiveUsersSum">0</span>
+                    Average
+                  </div>
+                  <div class="chart-right" id="forumActiveUsersChart" style="height: 250px;">
+                  </div>
+                </div>
+              </div>
+              <div class="chart-container">
+                <h4 class="titleWithBorder">New Forum Post</h4>
+                <div class="row-chart clearfix">
+                  <div class="chart-left pull-left ">
+                    <span class="number" id="newForumPostSum" >0</span>
+                    Total post
+                  </div>
+                  <div class="chart-right" id="newForumPostChart" style="height: 250px;">
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="chart-container">
+                <h4 class="titleWithBorder">New users social connections</h4>
+                <div class="row-chart clearfix">
+                  <div class="chart-left pull-left ">
+                    <span class="number" id="userConnectionSum" >0</span>
+                    Total connections
+                  </div>
+                  <div class="chart-right" id="userConnectionChart" style="height: 250px;">
+                  </div>
+                </div>
+              </div>
+              <div class="chart-container">
+                <h4 class="titleWithBorder">New posts on the activities stream</h4>
+                <div class="row-chart clearfix">
+                  <div class="chart-left pull-left ">
+                    <span class="number" id="socialPostSum">0</span>
+                    Total activities
+                  </div>
+                  <div class="chart-right" id="socialPostChart" style="height: 250px;">
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="chart-container">
+                <h4 class="titleWithBorder">PLF Downloads</h4>
+                <div class="row-chart clearfix">
+                  <div class="chart-left pull-left ">
+                    <span class="number" id="plfDownloadsSum">0</span>
+                    All version
+                  </div>
+                  <div class="chart-right" id="plfDownloadsChart" style="height: 250px;">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--END Canvas view-->
+            
+            <div class="uiAction boxContent">
+              <button value="Save" type="button" class="btn btn-primate" id="showExportButton">Export</button>
+            </div>
+            
+            <!--START export-->
+            <div class="export-container" id="export-container" style="display:none">
+              <div class="export-inner">
+                <h3>Export Settings</h3>
+                <h4 class="titleWithBorder">Metrics</h4>
+                  <p>
+                    <label class="uiCheckbox"><input type="checkbox" id="cbExportNewUsersData" class="checkbox"  checked><span>New Users</span></label>
+                    <label class="uiCheckbox"><input type="checkbox" id="cbExportForumActiveUsersData" class="checkbox" checked><span>Forum Active Users</span></label>
+                    <label class="uiCheckbox"><input type="checkbox" id="cbExportNewForumPostsData" class="checkbox" checked><span>New forum posts</span></label>
+                  </p>
+                  <p>
+                    <label class="uiCheckbox"><input type="checkbox" id="cbExportLoginCountData" class="checkbox" checked><span>Nb Login</span></label>
+                    <label class="uiCheckbox"><input type="checkbox" id="cbExportUserConnectionData" class="checkbox" checked><span>Nb Users Connections</span></label>
+
+                    <label class="uiCheckbox"><input type="checkbox" id="cbExportSocialPostData" class="checkbox" checked><span>Nb Post in Activities Stream</span></label>
+                    
+                  </p>
+
+                  <p>
+
+                    <label class="uiCheckbox"><input type="checkbox" id="cbExportPlfDownloadsData" class="checkbox" checked><span>PLF Download</span></label>
+                  </p>
+
+
+                <h4 class="titleWithBorder">Format</h4>
+                  <p>
+                    <label class="uiRadio"><input type="radio" class="checkbox" name="rbExportType" value="csv" checked><span>Comma-Sepaated Values (.csv)</span></label>
+                  </p>
+                  <p>          
+                    <label class="uiRadio"><input type="radio" class="checkbox" name="rbExportType" value="excel"><span>Excel (.xlsx)</span></label>
+                  </p>
+                <div class="uiAction boxContent">
+                  <button id="saveExport" class="btn btn-primary" type="button" value="Save">Export</button>
+                  <button id="cancelExport" class="btn" type="button" value="Cancel">Cancel</button>
+                </div>
+  
+              </div>
+            </div><!--END export-->
+            
+            
+          </div>
+        </div>
+        
+      </body>
+    </html>
+    	
+    ]]>
+  </Content>
+</Module>

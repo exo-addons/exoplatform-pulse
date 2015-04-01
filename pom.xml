@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>addons-parent-pom</artifactId>
+    <groupId>org.exoplatform.addons</groupId>
+    <version>4</version>
+    <relativePath />
+  </parent>
+  <groupId>org.exoplatform.addons.pulse</groupId>
+  <artifactId>exoplatform-pulse-parent</artifactId>
+  <version>1.0.x-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>eXo platform pulse addon</name>
+  <description>eXo platform pulse addon to manage and present activities statistic</description>
+  <modules>
+    <module>lib</module>
+    <module>config</module>
+    <module>webapp</module>
+    <module>bundle</module>
+  </modules>
+  <scm>
+    <connection>scm:git:git://github.com/exo-addons/exoplatform-pulse-addon.git</connection>
+    <developerConnection>scm:git:git@github.com:exo-addons/exoplatform-pulse-addon.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/exo-addons/exoplatform-pulse-addon.git</url>
+  </scm>
+  <properties>
+    <exoplatform.version>4.1.0</exoplatform.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <!-- Import versions from platform project -->
+      <dependency>
+        <groupId>org.exoplatform.platform</groupId>
+        <artifactId>platform</artifactId>
+        <version>${exoplatform.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <profiles>
+    <profile>
+      <id>project-repositories</id>
+      <activation>
+        <property>
+          <name>!skip-project-repositories</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <id>repository.exoplatform.org</id>
+          <url>https://repository.exoplatform.org/public</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <id>repository.exoplatform.org</id>
+          <url>https://repository.exoplatform.org/public</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+</project>

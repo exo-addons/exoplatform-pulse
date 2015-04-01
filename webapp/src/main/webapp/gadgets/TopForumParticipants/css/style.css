@@ -1,0 +1,30 @@
+.uiBox.topForumParticipant .uiContentBox {
+	padding: 15px;
+}
+.topForumParticipant .selectTime {
+	margin-bottom: 10px;
+}
+.topForumParticipant .list-top-user > li + li {
+	margin-top: 10px;
+}
+.topForumParticipant .list-top-user .media > .pull-left img {
+	margin-top: 4px;
+	width: 36px;
+	height: 36px;
+}
+.topForumParticipant.list-top-user span {
+	display: block;
+}
+.topForumParticipant .list-top-user .post {
+	color: #333;
+	display: block;
+}
+.topForumParticipant .lastUpdate {
+	border-top: 1px solid #dedede;
+	margin-top: 15px;
+	padding-top: 5px;
+}
+.topForumParticipant .lastUpdate .text-light {
+	color: #888888;
+}
+.topForumParticipant {}

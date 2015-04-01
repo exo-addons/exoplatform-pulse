@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Copyright (C) 2003-2013 eXo Platform SAS.
+
+    This is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 3 of
+    the License, or (at your option) any later version.
+
+    This software is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this software; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<configuration>
+  
+  <component>
+    <type>org.exoplatform.addon.pulse.service.ws.RestForumParticipant</type>
+  </component>
+  	
+  <component>
+    <key>org.exoplatform.addon.pulse.service.activitystatistic.ActivityStatisticService</key>
+    <type>org.exoplatform.addon.pulse.service.activitystatistic.ActivityStatisticServiceImpl</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.addon.pulse.service.ws.RestActivitiesStatistic</type>
+  </component>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.listener.ListenerService</target-component>
+    <component-plugin>
+      <name>exo.core.security.ConversationRegistry.register</name>
+      <set-method>addListener</set-method>
+      <type>org.exoplatform.addon.pulse.listener.LoginCountListener</type>
+      <description>Listener for user login event</description>
+    </component-plugin>
+  </external-component-plugins>
+ 
+  <external-component-plugins>
+  	<target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+    <component-plugin>
+      <name>NewUserEventListener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.addon.pulse.listener.PlatformUserEventListener</type>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.forum.service.ForumService</target-component>
+    <component-plugin>
+      <name>ForumEventListener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.addon.pulse.listener.PlatformForumEventListener</type>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+    <component-plugin>
+      <name>ActivityNotificationImpl</name>
+      <set-method>addActivityEventListener</set-method>
+      <type>org.exoplatform.addon.pulse.listener.SocialActivitytListener</type>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
+    <component-plugin>
+      <name>RelationshipPublisher</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.addon.pulse.listener.SocialRelationshipPublisherListener</type>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+   <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
+    <component-plugin>
+      <name>ForumStatsCounterJob</name>
+      <set-method>addPeriodJob</set-method>
+      <type>org.exoplatform.services.scheduler.PeriodJob</type>
+      <description>add a job to count daily the number of Posts and Active Users</description>
+      <init-params>
+        <properties-param>
+          <name>job.info</name>
+          <description>save the monitor data  periodically</description>
+          <property name="jobName" value="ForumStatsCounterJob"/>
+          <property name="groupName" value="KnowlegedSuite"/>
+          <property name="job" value="org.exoplatform.addon.pulse.service.activitystatistic.ForumStatisticCounterJob"/>
+          <property name="repeatCount" value="0"/>
+          <property name="period" value="7200000"/> <!-- 2 hours-->
+          <property name="startTime" value="+300000"/>
+          <property name="endTime" value=""/>               
+        </properties-param>  
+      </init-params>
+    </component-plugin>
+  </external-component-plugins> 
+
+</configuration>
+

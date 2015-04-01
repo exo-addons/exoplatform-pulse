@@ -1,0 +1,112 @@
+<nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.5" xmlns:mix="http://www.jcp.org/jcr/mix/1.5" xmlns:jcr="http://www.jcp.org/jcr/1.5" >
+   <nodeType name="exo:activityStatisticByDay" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+      <supertypes>
+         <supertype>nt:base</supertype>
+      </supertypes>
+      <propertyDefinitions>
+         <propertyDefinition name="exo:createdDate" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:modifiedDate" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:newUser" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+         <propertyDefinition name="exo:newUserToday" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:forumActiveUserToday" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:forumPosts" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:forumPostToday" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:loginCount" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:loginCountToday" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+         
+         <propertyDefinition name="exo:userConnectionCount" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:userConnectionCountToday" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+         
+         <propertyDefinition name="exo:socialPostCount" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:socialPostCountToday" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+         
+         <propertyDefinition name="exo:emailNotificationCount" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+
+         <propertyDefinition name="exo:emailNotificationToday" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+            <valueConstraints/>
+         </propertyDefinition>
+      </propertyDefinitions>
+   </nodeType>
+   
+
+    <nodeType name="exo:activityStatistic" isMixin="false" hasOrderableChildNodes="true" primaryItemName="" >
+      <supertypes>
+         <supertype>nt:base</supertype>
+         <supertype>exo:subActivityStatistic</supertype>
+      </supertypes>
+      <childNodeDefinitions>
+            <childNodeDefinition name="*" defaultPrimaryType="exo:subActivityStatistic" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>exo:subActivityStatistic</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>         
+            <childNodeDefinition name="*" defaultPrimaryType="exo:activityStatisticByDay" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>exo:activityStatisticByDay</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>         
+        </childNodeDefinitions>
+    </nodeType>
+    
+      
+  <nodeType name="exo:subActivityStatistic" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+     <childNodeDefinitions>
+        <childNodeDefinition name="*" defaultPrimaryType="exo:activityStatistic" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+            <requiredPrimaryTypes>
+                <requiredPrimaryType>exo:activityStatistic</requiredPrimaryType>
+            </requiredPrimaryTypes>
+        </childNodeDefinition>         
+        </childNodeDefinitions>
+  </nodeType>
+    
+
+   <nodeType name="exo:activityStatisticHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+      <supertypes>
+         <supertype>nt:unstructured</supertype>
+      </supertypes> 
+      <childNodeDefinitions>
+            <childNodeDefinition name="*" defaultPrimaryType="exo:activityStatistic" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+            <requiredPrimaryTypes>
+               <requiredPrimaryType>exo:activityStatistic</requiredPrimaryType>
+            </requiredPrimaryTypes>
+         </childNodeDefinition>
+      </childNodeDefinitions>
+   </nodeType>
+</nodeTypes>

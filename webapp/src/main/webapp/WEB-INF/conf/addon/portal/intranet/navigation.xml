@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node-navigation
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_2 http://www.gatein.org/xml/ns/gatein_objects_1_2"
+    xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_2">
+  <priority>100</priority>
+  <page-nodes>             
+    <node>
+	    <uri>exoplatform-pulse</uri>
+	    <name>exoplatform-pulse</name>
+	    <label>Pulse</label>
+	    <page-reference>portal::intranet::exoplatform-pulse</page-reference>
+    </node>
+  </page-nodes>
+</node-navigation>
