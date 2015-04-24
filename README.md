@@ -5,7 +5,7 @@ Introduce
 ---------------
 "exoplatform-pulse" that contains Activity Statistics Gadgets:
 * Top Forum Participant gadget: Show Top Users of Forum Participant
-* Activity Statistics gadget: Display eXo Platform statisic. They are: New Users, Login Count, Forum Active Users, New Forum Post, New users social connections, New posts on the activities stream, Total Platform Download.
+* Activity Statistics gadget: Display eXo Platform statisic. They are: New Users, Login Count, Forum Active Users, New Forum Post, New users social connections, New posts on the activities stream, Total Platform Download. This gadget allow export statistics to EXEL and CSV file also.
 
 Compatibility:
 ---------------
@@ -23,7 +23,7 @@ ScreenShot
 <img src="resource/ScreenShots/ActivitiyStatisticsMini.png" alt="Activity Statistics minimum view">
 <br>
 * Activity Statistics (Export data view):
-<img src="resource/ScreenShots/ActivitiyStatisticsMini.png" alt="Activity Statistics: Export data view">
+<img src="resource/ScreenShots/ActivityStatisticsExport.png" alt="Activity Statistics: Export data view">
 <br>
 
 Build
