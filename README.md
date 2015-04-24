@@ -13,18 +13,18 @@ From eXo Platform 4.1
 
 ScreenShot
 ---------------
-* Top Forum Participant:
+* Top Forum Participant:<br>
 <img src="resource/ScreenShots/TopForumParticipant.png" alt="Top Forum Participant">
-
-* Activity Statistics (Maximum view):
+<br>
+* Activity Statistics (Maximum view):<br>
 <img src="resource/ScreenShots/ActivityStatistics.png" alt="Activity Statistics maximum view">
-
-* Activity Statistics (Minimum view):
+<br>
+* Activity Statistics (Minimum view):<br>
 <img src="resource/ScreenShots/ActivitiyStatisticsMini.png" alt="Activity Statistics minimum view">
-
+<br>
 * Activity Statistics (Export data view):
 <img src="resource/ScreenShots/ActivitiyStatisticsMini.png" alt="Activity Statistics: Export data view">
-
+<br>
 
 Build
 ---------------
