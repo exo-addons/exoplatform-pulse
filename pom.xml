@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.exoplatform.addons.pulse</groupId>
   <artifactId>exoplatform-pulse-parent</artifactId>
-  <version>1.0.x-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
   <name>eXo platform pulse addon</name>
   <description>eXo platform pulse addon to manage and present activities statistic</description>
@@ -23,7 +23,7 @@
   <scm>
     <connection>scm:git:git://github.com/exo-addons/exoplatform-pulse.git</connection>
     <developerConnection>scm:git:git@github.com:exo-addons/exoplatform-pulse.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>1.0.0</tag>
     <url>https://github.com/exo-addons/exoplatform-pulse.git</url>
   </scm>
   <properties>
