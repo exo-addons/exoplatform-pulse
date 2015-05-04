@@ -21,10 +21,10 @@
     <module>bundle</module>
   </modules>
   <scm>
-    <connection>scm:git:git://github.com/exo-addons/exoplatform-pulse-addon.git</connection>
-    <developerConnection>scm:git:git@github.com:exo-addons/exoplatform-pulse-addon.git</developerConnection>
+    <connection>scm:git:git://github.com/exo-addons/exoplatform-pulse.git</connection>
+    <developerConnection>scm:git:git@github.com:exo-addons/exoplatform-pulse.git</developerConnection>
     <tag>HEAD</tag>
-    <url>https://github.com/exo-addons/exoplatform-pulse-addon.git</url>
+    <url>https://github.com/exo-addons/exoplatform-pulse.git</url>
   </scm>
   <properties>
     <exoplatform.version>4.1.0</exoplatform.version>
