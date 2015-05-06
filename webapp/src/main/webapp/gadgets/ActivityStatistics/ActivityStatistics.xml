@@ -342,25 +342,26 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
           }
           
           function cleanUpCharts(){
+            loadingItem =  "<div class='loadingImage'></div>";
             if(getViewName()== "home"){
-              $("#miniChart").html("<span>Loading ... </span>");
-              $("#miniChartSum").text("0");
+              $("#miniChart").html(loadingItem);
+              $("#miniChartSum").text("...");
             }else{
-              $("#newUsersChart").html("<span>Loading ... </span>");
-              $("#loginCountChart").html("<span>Loading ... </span>");
-              $("#forumActiveUsersChart").html("<span>Loading ... </span>");
-              $("#newForumPostChart").html("<span>Loading ... </span>");
-              $("#plfDownloadsChart").html("<span>Loading ... </span>");
-              $("#userConnectionChart").html("<span>Loading ... </span>");
-              $("#socialPostChart").html("<span>Loading ... </span>");
+              $("#newUsersChart").html(loadingItem);
+              $("#loginCountChart").html(loadingItem);
+              $("#forumActiveUsersChart").html(loadingItem);
+              $("#newForumPostChart").html(loadingItem);
+              $("#plfDownloadsChart").html(loadingItem);
+              $("#userConnectionChart").html(loadingItem);
+              $("#socialPostChart").html(loadingItem);
               
-              $("#newUsersSum").text("0");
-              $("#loginCountSum").text("0");
-              $("#forumActiveUsersSum").text("0");
-              $("#newForumPostSum").text("0");
-              $("#plfDownloadsSum").text("0");
-              $("#userConnectionSum").text("0");
-              $("#socialPostSum").text("0");
+              $("#newUsersSum").text("...");
+              $("#loginCountSum").text("...");
+              $("#forumActiveUsersSum").text("...");
+              $("#newForumPostSum").text("...");
+              $("#plfDownloadsSum").text("...");
+              $("#userConnectionSum").text("...");
+              $("#socialPostSum").text("...");
             }
           }
           
