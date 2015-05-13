@@ -8,22 +8,56 @@
     <Require feature="dynamic-height"/>
   </ModulePrefs>
   <Content type="html">
-  <![CDATA[     
+  <![CDATA[  
+  <!DOCTYPE html>  
   <head>
-    <link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
     <link type="text/css" rel="stylesheet" href="css/style.css" />
     <script language="javascript" type="text/javascript" src="/eXoResources/javascript/jquery-1.7.1.js"></script>
     <script language="javascript" type="text/javascript" src="/eXoResources/skin/bootstrap/js/bootstrap-dropdown.js"></script>
 
     <script type="text/javascript">
+  
+        //Get core CSS from parent
+	    $(document).ready(function(){
+	        //Check the parent container of the Iframe
+	        if(window.top && window.top.location.href != document.location.href) {
+	
+	          // Get all parent's <link>s
+	          var linkrels = window.top.document.getElementsByTagName('link');
+	          // Get the Iframe head
+	          var iframeHead = document.getElementsByTagName('head').item(0);
+	          // Loop through parent's links
+	          for (var i = 0, max = linkrels.length; i < max; i++) {
+	            // Get parent stylesheets
+	            if (linkrels[i].rel && linkrels[i].rel == 'stylesheet' && linkrels[i].id && linkrels[i].id == 'CoreSkin') {
+	              // Create new link element and copy all attributes
+	              var thestyle = document.createElement('link');
+	              var attrib = linkrels[i].attributes;
+	              for (var j = 0, attribmax = attrib.length; j < attribmax; j++) {
+	                thestyle.setAttribute(attrib[j].nodeName, attrib[j].value);
+	              }
+	
+	               // add the newly created link element to the head
+	              iframeHead.appendChild(thestyle);
+	            }
+	          }
+	        }
+	    });
+
+   
     	var maxResult = 5;
     	var filterBy = "month";
     	var lastUpdate = 0;
     	var arrListParticipants = [];
-
+  
+		  function reset() {
+		    strHTML = "<div class='loadingContainer'><span class='loadingImage'></span></div>";
+		    $(".list-top-user").html(strHTML);
+		  }
+  	
     	function initTopForumParticipants(filterBy, maxResult) {
-    		var urlTopForumParticipants = '/rest/ForumParticipant/ByPeriod/'+ filterBy + '/' + maxResult;    
+     		reset();
+     		var urlTopForumParticipants = '/rest/ForumParticipant/ByPeriod/'+ filterBy + '/' + maxResult;    
 				$.ajax({
 					url      : urlTopForumParticipants,
 					dataType : 'json',
@@ -50,7 +84,7 @@
 				$.each(arrList, function(i){
 	    		var linkprofile = arrList[i].profileUrl;
 	    		var userimglink = arrList[i].avatarUrl;
-	    		if(userimglink == null) userimglink = '/social-resources/skin/images/ShareImages/UserAvtDefault.png';
+	    		if(userimglink == null) userimglink = '/eXoSkin/skin/images/system/UserAvtDefault.png';
 	    		var fullname = arrList[i].fullName;
 	    		var periodpost = arrList[i].periodPost;
 	    		var totalPost = arrList[i].totalPost;
@@ -147,8 +181,9 @@
 			.UIGadgetPortlet .gadgets-gadget
 			{ -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18); -moz-box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18); box-shadow: 0 2px 4px -1px rgba(35, 44, 48, 0.18); margin-bottom: 12px; }
 			/* gadget-common.css */
-			.uiBox 
-			{ margin-bottom: 2px; box-shadow: none; } 	
+            body .uiBox {
+              margin-bottom: 2px; box-shadow: none;
+            } 	
 
 			.btn-input {
 			   display: block;

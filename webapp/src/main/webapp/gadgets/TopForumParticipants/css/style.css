@@ -28,3 +28,44 @@
 	color: #888888;
 }
 .topForumParticipant {}
+
+/*CSS for loadingImage animation*/
+.loadingImage {
+  background: url("../images/loading64x64Light.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+  height: 64px;
+  width: 64px;
+  display: inline-block;
+  -webkit-animation: loading 1s infinite linear;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -32px 0 0 -32px;
+}
+
+.loadingContainer {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+@-webkit-keyframes loading{
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes loading {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+/*END CSS for loadingImage animation*/
