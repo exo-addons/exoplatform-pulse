@@ -28,8 +28,9 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
     <Require feature="views" />  
   </ModulePrefs>
   <Content type="html">
-    <![CDATA[     
-	 <html>
+   <![CDATA[
+     <!DOCTYPE html>
+     <html>
       <head>
         <title>eXo Community Activity Statistic</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -342,7 +343,7 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
           }
           
           function cleanUpCharts(){
-            loadingItem =  "<div class='loadingImage'></div>";
+            loadingItem = "<div class='loadingContainer'><span class='loadingImage'></span></div>";
             if(getViewName()== "home"){
               $("#miniChart").html(loadingItem);
               $("#miniChartSum").text("...");
