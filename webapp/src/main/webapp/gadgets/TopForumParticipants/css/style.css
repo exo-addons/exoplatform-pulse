@@ -35,6 +35,7 @@
   height: 64px;
   width: 64px;
   display: inline-block;
+  animation: 1s linear 0s normal none infinite running loading;
   -webkit-animation: loading 1s infinite linear;
   position: absolute;
   top: 50%;
