@@ -30,6 +30,8 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   <Content type="html">
    <![CDATA[
      <!DOCTYPE html>
+     
+     
      <html>
       <head>
         <title>eXo Community Activity Statistic</title>
@@ -69,7 +71,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
         
         <script language="javascript" type="text/javascript">
           var globalFilter = "day";
-          var plfDownloadChartData;
           $(function() {
             $( "#datePickerFrom" ).datepicker({ dateFormat: "dd/mm/yy" });
             //$( "#datePickerTo" ).datepicker({ dateFormat: "dd/mm/yy" });
@@ -113,118 +114,7 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
             return json;
           }
           
-          function drawPLFDownloadChartByFilterWeekMonth(displayObject, sumObject){
-            // alert("drawPLFDownloadChartByFilterWeekMonth");
-            dateFromString = $("#datePickerFrom").val().replace(/\//g, '-');
-            maxColumn = getViewName()=="home"?5:10;
-            filter = globalFilter;
-            var url = "/rest/activitystatistic/plfdownload/"+ maxColumn + "/" + filter+ "/" + dateFromString;
-            /*
-            $.when(
-            parseJSON(getREST(url).responseText)
-            ).then(function( data, textStatus, jqXHR ) {
-            chartTitle = data.listTitle;
-            plfDownloadData = data.plfDownloadsData;
-            var plfDownloadChart;
-            drawChart(plfDownloadChart, displayObject, plfDownloadData, chartTitle, sumObject);
-          });
-            */
-            
-            // It takes time to get PLFdownload data
-            // Will load data and draw chart ansynchronize
-            $.getJSON( url, function( data ) {
-              chartTitle = data.listTitle;
-              plfDownloadData = data.plfDownloadsData;
-              var plfDownloadChart;
-              drawChart(plfDownloadChart, displayObject, plfDownloadData, chartTitle, sumObject);
-            });
-            
-          }
-          
-          
-          function drawPLFDownloadChart(displayObject, sumObject){
-            //alert("drawPLFDownloadChart");
-            if(globalFilter != "day"){
-              drawPLFDownloadChartByFilterWeekMonth(displayObject, sumObject)
-                }else{
-                  $.when(
-                    getPLFDownloadData()
-                  ).then(function(data){
-                    if(null==data||null==data.query.results){
-                      
-                    }else{
-                      downloadData = data.query.results.json.downloads;
-                      chartTitle=[];
-                      chartValue=[];
-                      
-                      if( downloadData== undefined){
-                        var plfDownloadChart;
-                        drawChart(plfDownloadChart, displayObject, chartValue, chartTitle, sumObject);
-                        return;
-                      }
-                      
-                      if($.isArray(downloadData)==false){
-                        //alert(downloadData.json);
-                        dateString = (downloadData.json[0]).substring(0,10);
-                        //dateValue = new Date(getDateFromFormat(dateString,"yyyy-MM-dd"));
-                        //dateString = dateValue.toString("dd/MM/yyyy");
-                        chartTitle[0]=dateString;
-                        chartValue[0]= parseFloat(downloadData.json[1]);
-                      }else{
-                        maxColumn = getViewName()=="home"?5:10;
-                        for(i=0; i< maxColumn && i< downloadData.length; i++){
-                          dateString = (downloadData[i].json[0]).substring(0,10);
-                          //dateValue = new Date(getDateFromFormat(dateString,"yyyy-MM-dd"));
-                          //dateString = dateValue.toString("dd/MM/yyyy");
-                          chartTitle[i]=dateString;
-                          chartValue[i]= parseFloat(downloadData[i].json[1]);
-                        }
-                      }
-                      for(i=0; i<chartTitle.length; i++){
-                        dateString = chartTitle[i];
-                        if(globalFilter=="day"){
-                          dateValue = new Date(getDateFromFormat(dateString,"yyyy-MM-dd"));
-                          dateString = dateValue.toString("dd-MM-yyyy");
-                          chartTitle[i] = dateString;
-                          continue;
-                            }
-                      }
-                      
-                      //alert(chartTitle);
-                      //alert(chartValue);
-                      var plfDownloadChart;
-                      drawChart(plfDownloadChart, displayObject, chartValue, chartTitle, sumObject);
-                    }
-                  });
-                }
-          }
-          
-          function getPLFDownloadData(){
-            maxColumn = getViewName()=="home"?5:10;
-            start_date_string = $("#datePickerFrom").val();
-            start_date = new Date(getDateFromFormat(start_date_string,"dd/MM/yyyy"));
-            start_date_string = start_date.toString("yyyy-MM-dd");
-            //alert(start_date_string);
-            end_date_string = $("#datePickerTo").val();
-            end_date =  new Date();
-            if(end_date_string != "Today"){
-              
-              end_date = new Date(getDateFromFormat(end_date_string,"dd/MM/yyyy"));
-            }
-            if(end_date > (new Date())) end_date= new Date();
-            //alert(end_date);
-            end_date_string = end_date.toString("yyyy-MM-dd");
-            
-            var url = "http://sourceforge.net/projects/exo/files/stats/json?start_date="+start_date_string+"&end_date="+end_date_string;
-            //alert(url);
-            var query = "select * from json where url=\"" + url + "\"";
-            return $.getJSON("http://query.yahooapis.com/v1/public/yql", { q: query, format: "json" },function(data){
-              if (data.query.results) {
-                
-              }
-            });
-          }
-          
+
           function drawChart(chartObj, displayObject, chartValue, chartTitle, sumObject, isAverage){
             
             //Set summary number for chart
@@ -352,7 +242,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
               $("#loginCountChart").html(loadingItem);
               $("#forumActiveUsersChart").html(loadingItem);
               $("#newForumPostChart").html(loadingItem);
-              $("#plfDownloadsChart").html(loadingItem);
               $("#userConnectionChart").html(loadingItem);
               $("#socialPostChart").html(loadingItem);
               
@@ -360,7 +249,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
               $("#loginCountSum").text("...");
               $("#forumActiveUsersSum").text("...");
               $("#newForumPostSum").text("...");
-              $("#plfDownloadsSum").text("...");
               $("#userConnectionSum").text("...");
               $("#socialPostSum").text("...");
             }
@@ -422,14 +310,9 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
                 dataToDraw = socialPostData;
                 $("#miniTotal").text("New posts on the activities stream");
               }
-
-
-              if(metric == "plfDownloads"){
-                drawPLFDownloadChart($("#miniChart"),$("#miniChartSum"));
-                $("#miniTotal").text("All version");
-              }else{
-                drawChart(chart,$("#miniChart"), dataToDraw, chartTitle, $("#miniChartSum"), isAverage);
-              }
+            
+              drawChart(chart,$("#miniChart"), dataToDraw, chartTitle, $("#miniChartSum"), isAverage);
+              
             }else{
               //Draw chart in Maximum mode
               var chart1, chart2, chart3, chart4, chart5, chart6, chart7, chart8;
@@ -441,8 +324,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 
               drawChart(chart4, $("#userConnectionChart"), userConnectionData, chartTitle, $("#userConnectionSum"));
               drawChart(chart4, $("#socialPostChart"), socialPostData, chartTitle, $("#socialPostSum"));
-              
-              drawPLFDownloadChart($("#plfDownloadsChart"),$("#plfDownloadsSum"));
             }
             
             gadgets.window.adjustHeight();
@@ -553,13 +434,11 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
               var isExportForumActiveUsersData = $("#cbExportForumActiveUsersData").is(':checked');
               var isExportNewForumPostsData = $("#cbExportNewForumPostsData").is(':checked');
               var isExportLoginCountData = $("#cbExportLoginCountData").is(':checked');
-              var isExportPlfDownloadsData = $("#cbExportPlfDownloadsData").is(':checked');
-              
               var isExportUserConnectionData = $("#cbExportUserConnectionData").is(':checked');
               var isExportSocialPostData = $("#cbExportSocialPostData").is(':checked');
 
               
-              if(!(isExportNewUsersData || isExportForumActiveUsersData || isExportNewForumPostsData || isExportLoginCountData || isExportPlfDownloadsData)){
+              if(!(isExportNewUsersData || isExportForumActiveUsersData || isExportNewForumPostsData || isExportLoginCountData)){
                 alert("You should check Metrics types to export");
                 return;
               }
@@ -577,8 +456,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
               url += "&exportForumActiveUsersData=" + isExportForumActiveUsersData;
               url += "&exportNewForumPostsData=" + isExportNewForumPostsData;
               url += "&exportLoginCountData=" + isExportLoginCountData;
-              url += "&exportPlfDownloadsData=" + isExportPlfDownloadsData;
-
               url += "&exportUserConnectionData=" + isExportUserConnectionData;
               url += "&exportSocialPostData=" + isExportSocialPostData;
               //alert(url);
@@ -621,7 +498,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
                     <option value="newForumPost">New Forum Post</option>
                     <option value="userConnection">New users social connections</option> 
                     <option value="socialPost">New posts on the activities stream</option>               
-                    <option value="plfDownloads">PLF Downloads</option>
                   </select>
                 </span>
               </p>
@@ -710,19 +586,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
                 </div>
               </div>
 
-
-              <div class="chart-container">
-                <h4 class="titleWithBorder">PLF Downloads</h4>
-                <div class="row-chart clearfix">
-                  <div class="chart-left pull-left ">
-                    <span class="number" id="plfDownloadsSum">0</span>
-                    All version
-                  </div>
-                  <div class="chart-right" id="plfDownloadsChart" style="height: 250px;">
-                    
-                  </div>
-                </div>
-              </div>
             </div>
             <!--END Canvas view-->
             
@@ -748,11 +611,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
                     
                   </p>
 
-                  <p>
-
-                    <label class="uiCheckbox"><input type="checkbox" id="cbExportPlfDownloadsData" class="checkbox" checked><span>PLF Download</span></label>
-                  </p>
-
 
                 <h4 class="titleWithBorder">Format</h4>
                   <p>
@@ -769,13 +627,13 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
               </div>
             </div><!--END export-->
             
-            
           </div>
         </div>
         
       </body>
     </html>
-    	
+
     ]]>
   </Content>
 </Module>
+
