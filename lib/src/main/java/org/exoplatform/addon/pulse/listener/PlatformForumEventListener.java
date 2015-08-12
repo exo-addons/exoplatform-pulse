@@ -47,7 +47,7 @@ public class PlatformForumEventListener extends ForumEventListener {
     this.forumService = forumService;
   }
   
-  private void updateActivityStatistic() {
+  private void updateActivityStatistic(int numberTopicTochange) {
     try {
      
       if (forumService != null && activityStatsService != null) {
@@ -64,15 +64,12 @@ public class PlatformForumEventListener extends ForumEventListener {
         
         objectToUpdate.setCreatedDate(todayStats.getCreatedDate());
         objectToUpdate.setModifiedDate(new Date());
-        
-        objectToUpdate.setForumPostToday(forumStats.getPostCount() - todayStats.getForumPosts());
-        
-        ActivityStatisticBean yesterdayStats = activityStatsService.getActivityStatisticByDate(new Date(now - DAY_IN_MILLISEC));
-        long yestPost = todayStats.getForumPosts();
-        if(null != yesterdayStats){
-         yestPost = yesterdayStats.getForumPosts() + yesterdayStats.getForumPostToday();
-        }
-        objectToUpdate.setForumPosts(yestPost);
+
+        if (todayStats.getForumPostToday()==null)
+          todayStats.setForumPostToday(0L); 
+        objectToUpdate.setForumPostToday(todayStats.getForumPostToday() + numberTopicTochange);
+
+        objectToUpdate.setForumPosts(forumStats.getPostCount());
         objectToUpdate.setForumActiveUserToday(forumStats.getActiveUsers());
 
         activityStatsService.createOrUpdate(objectToUpdate);
@@ -86,7 +83,7 @@ public class PlatformForumEventListener extends ForumEventListener {
   
   @Override
   public void addTopic(Topic topic) {
-    updateActivityStatistic();  
+    updateActivityStatistic(1);  
   }
 
   @Override
@@ -97,7 +94,7 @@ public class PlatformForumEventListener extends ForumEventListener {
 
   @Override
   public void updateTopics(List<Topic> topics, boolean isLock) {
- // do nothing
+    // do nothing
     
   }
 
@@ -109,17 +106,17 @@ public class PlatformForumEventListener extends ForumEventListener {
 
   @Override
   public void mergeTopic(Topic newTopic, String removeActivityId1, String removeActivityId2) {
-    updateActivityStatistic();
+    // do nothing
   }
 
   @Override
   public void splitTopic(Topic newTopic, Topic splitedTopic, String removeActivityId) {
-    updateActivityStatistic();
+    // do nothing
   }
 
   @Override
   public void addPost(Post post) {
-    updateActivityStatistic();
+    updateActivityStatistic(1);
   }
 
   @Override
@@ -134,27 +131,27 @@ public class PlatformForumEventListener extends ForumEventListener {
 
   @Override
   public void removeActivity(String activityId) {
-    updateActivityStatistic();
+    // do nothing    
   }
 
   @Override
   public void removeComment(String activityId, String commentId) {
-    updateActivityStatistic();
+    // do nothing    
   }
 
   @Override
   public void saveCategory(Category category) {
-    updateActivityStatistic();
+    // do nothing    
   }
 
   @Override
   public void saveForum(Forum forum) {
-    updateActivityStatistic();
+    // do nothing    
   }
 
   @Override
   public void movePost(List<Post> posts, List<String> srcPostActivityIds, String desTopicPath) {
-    // TODO Auto-generated method stub
+    // do nothing
     
   }
 
