@@ -71,7 +71,8 @@ public class ForumStatisticCounterJob extends MultiTenancyJob {
           objectToUpdate.setCreatedDate(todayStats.getCreatedDate());
           objectToUpdate.setModifiedDate(new Date());
           
-          objectToUpdate.setForumPostToday(forumStats.getPostCount() - todayStats.getForumPosts());
+          //do not use this line because if some forum posts were deleted before, (forumStats.getPostCount() - todayStats.getForumPosts()) will less than 0
+          //objectToUpdate.setForumPostToday(forumStats.getPostCount() - todayStats.getForumPosts());
           
           ActivityStatisticBean yesterdayStats = activityStatsService.getActivityStatisticByDate(new Date(now - DAY_IN_MILLISEC));
           long yestPost = todayStats.getForumPosts();
